@@ -21,6 +21,8 @@ public class Car {
     private String model;
     @Column(nullable = false)
     private String engineType;
+    @Column(nullable = false)
+    private boolean available;
 
     public Car() {
     }
@@ -29,6 +31,7 @@ public class Car {
         this.brand = brand;
         this.model = model;
         this.engineType = engineType;
+        this.available = true;
     }
 
     public Long getId() {
@@ -61,5 +64,13 @@ public class Car {
 
     public void setEngineType(String engineType) {
         this.engineType = engineType;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 }

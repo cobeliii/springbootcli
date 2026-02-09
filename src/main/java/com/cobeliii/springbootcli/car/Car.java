@@ -2,6 +2,8 @@ package com.cobeliii.springbootcli.car;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 public class Car {
     @Id
@@ -30,6 +32,9 @@ public class Car {
     public Car(String brand, String model, String engineType) {
         this.brand = brand;
         this.model = model;
+        if (!engineType.equalsIgnoreCase("electric") && !engineType.equalsIgnoreCase("petrol")){
+            throw new IllegalArgumentException("Invalid engine type");
+        }
         this.engineType = engineType;
         this.available = true;
     }
@@ -72,5 +77,17 @@ public class Car {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Car car = (Car) o;
+        return available == car.available && Objects.equals(id, car.id) && Objects.equals(brand, car.brand) && Objects.equals(model, car.model) && Objects.equals(engineType, car.engineType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, brand, model, engineType, available);
     }
 }

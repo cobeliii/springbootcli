@@ -26,23 +26,23 @@ public class CarServiceImplTest {
     void itShouldGetAllCars() {
         Car car = new Car("BMW", "M5", "petrol");
         when(carRepository.findAll()).thenReturn(List.of(car));
-        List<CarDto> cars = underTest.getAllAvailableCars();
-        assertThat(cars).isEqualTo(List.of(new CarDto("BMW", "M5", "petrol")));
+        List<CarDto> actual = underTest.getAllAvailableCars();
+        assertThat(actual).isEqualTo(List.of(new CarDto("BMW", "M5", "petrol")));
     }
 
     @Test
     void itShouldGetAllElectricCars() {
         Car car = new Car("BMW", "M5", "electric");
         when(carRepository.findAll()).thenReturn(List.of(car));
-        List<CarDto> cars = underTest.getAllAvailableCars();
-        assertThat(cars).isEqualTo(List.of(new CarDto("BMW", "M5", "electric")));
+        List<CarDto> actual = underTest.getAllAvailableCars();
+        assertThat(actual).isEqualTo(List.of(new CarDto("BMW", "M5", "electric")));
     }
 
     @Test
     void itShouldGetCarById(){
         Car car = new Car("BMW", "M5", "electric");
         when(carRepository.findById(car.getId())).thenReturn(Optional.of(car));
-        Optional<CarDto> carDto = underTest.getCarById(car.getId());
-        assertThat(carDto).isEqualTo(Optional.of(new CarDto("BMW", "M5", "electric")));
+        Optional<CarDto> actual = underTest.getCarById(car.getId());
+        assertThat(actual).isEqualTo(Optional.of(new CarDto("BMW", "M5", "electric")));
     }
 }

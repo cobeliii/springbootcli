@@ -2,8 +2,6 @@ package com.cobeliii.springbootcli.car;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,33 +17,25 @@ public class CarServiceImpl implements CarService{
 
     @Override
     public List<CarDto> getAllAvailableCars() {
-        List<Car> allAvailableCars = carRepository.findAll();
-        List<CarDto> allAvailableCarsDto = new ArrayList<>();
-        for (Car car : allAvailableCars) {
-            allAvailableCarsDto.add(new CarDto(car.getBrand(), car.getModel(), car.getEngineType()));
-        }
-        return allAvailableCarsDto;
+        return carRepository.findAll()
+                .stream()
+                .map(car -> new CarDto(car.getBrand(), car.getModel(), car.getEngineType()))
+                .toList();
     }
 
     @Override
     public List<CarDto> getAvailableElectricCars() {
-        List<Car> electricCars = carRepository.findAll()
+        return carRepository.findAll()
                 .stream()
                 .filter(car -> car.getEngineType().equalsIgnoreCase("electric"))
+                .map(car -> new CarDto(car.getBrand(), car.getModel(), car.getEngineType()))
                 .toList();
-
-        List<CarDto> electricCarsDto = new ArrayList<>();
-        for (Car car : electricCars) {
-            electricCarsDto.add(new CarDto(car.getBrand(), car.getModel(), car.getEngineType()));
-        }
-        return electricCarsDto;
     }
 
     @Override
     public Optional<CarDto> getCarById(Long id) {
-        Optional<Car> car = carRepository.findById(id);
-
-        return car.map(value -> new CarDto(value.getBrand(), value.getModel(), value.getEngineType()));
-
+       return carRepository.findById(id)
+               .map(value -> new CarDto(value.getBrand(), value.getModel(), value.getEngineType()));
+               //.orElseThrow(() -> new RuntimeExcept("Car not found"));
     }
 }

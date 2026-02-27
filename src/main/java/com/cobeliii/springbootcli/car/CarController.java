@@ -23,8 +23,8 @@ public class CarController {
         return carService.getAllAvailableCars();
     }
 
-    @GetMapping("/{engine_type}")
-    public List<CarDto> getAllElectricCars(@PathVariable String engineType){
+    @GetMapping("/electric")
+    public List<CarDto> getAllElectricCars(){
         return carService.getAvailableElectricCars();
     }
 

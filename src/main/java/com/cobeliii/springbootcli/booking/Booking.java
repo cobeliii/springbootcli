@@ -1,7 +1,7 @@
 package com.cobeliii.springbootcli.booking;
 
 import com.cobeliii.springbootcli.car.Car;
-import com.cobeliii.springbootcli.user.Users;
+import com.cobeliii.springbootcli.user.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -19,10 +19,12 @@ public class Booking {
             ,generator = "booking_seq"
     )
     private Long id;
-    @ManyToOne
-    private Users userId;
-    @ManyToOne
-    private Car carId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "car_id", referencedColumnName = "id", nullable = false)
+    private Car car;
     @Column(nullable = false)
     private LocalDateTime startTime;
 
@@ -33,9 +35,9 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(Users userId, Car carId) {
-        this.userId = userId;
-        this.carId = carId;
+    public Booking(User user, Car car) {
+        this.user = user;
+        this.car = car;
         this.startTime = LocalDateTime.now();
         this.endTime = null;
     }
@@ -48,20 +50,20 @@ public class Booking {
         this.id = id;
     }
 
-    public Users getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Users userId) {
-        this.userId = userId;
+    public void setUser(User userId) {
+        this.user = userId;
     }
 
-    public Car getCarId() {
-        return carId;
+    public Car getCar() {
+        return car;
     }
 
-    public void setCarId(Car carId) {
-        this.carId = carId;
+    public void setCar(Car carId) {
+        this.car = carId;
     }
 
     public LocalDateTime getStartTime() {
@@ -80,16 +82,25 @@ public class Booking {
         this.endTime = endTime;
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Booking booking = (Booking) o;
-        return Objects.equals(id, booking.id) && Objects.equals(userId, booking.userId) && Objects.equals(carId, booking.carId) && Objects.equals(startTime, booking.startTime) && Objects.equals(endTime, booking.endTime);
+        return Objects.equals(id, booking.id) && Objects.equals(user, booking.user) && Objects.equals(car, booking.car) && Objects.equals(startTime, booking.startTime) && Objects.equals(endTime, booking.endTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, carId, startTime, endTime);
+        return Objects.hash(id, user, car, startTime, endTime);
     }
 
 

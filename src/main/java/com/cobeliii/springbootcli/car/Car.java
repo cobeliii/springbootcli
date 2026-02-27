@@ -1,7 +1,11 @@
 package com.cobeliii.springbootcli.car;
 
+import com.cobeliii.springbootcli.booking.Booking;
+import com.cobeliii.springbootcli.user.User;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -26,7 +30,10 @@ public class Car {
     @Column(nullable = false)
     private boolean available;
 
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
+    private List<Booking> bookings;
     public Car() {
+        bookings = new ArrayList<>();
     }
 
     public Car(String brand, String model, String engineType) {
@@ -78,6 +85,35 @@ public class Car {
     public void setAvailable(boolean available) {
         this.available = available;
     }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
+
+    public void addBooking(Booking booking) {
+        if (booking == null) return;
+
+        if (!bookings.contains(booking)) {
+            bookings.add(booking);
+        }
+        if (booking.getCar() != this) {
+            booking.setCar(this);
+        }
+    }
+
+    public void removeBooking(Booking booking) {
+        if (booking == null || bookings == null) return;
+
+        bookings.remove(booking);
+        if (booking.getCar() == this) {
+            booking.setUser(null);
+        }
+    }
+
 
     @Override
     public boolean equals(Object o) {

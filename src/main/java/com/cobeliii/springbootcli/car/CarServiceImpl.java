@@ -1,5 +1,6 @@
 package com.cobeliii.springbootcli.car;
 
+import com.cobeliii.springbootcli.exceptions.CarNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -34,8 +35,9 @@ public class CarServiceImpl implements CarService{
 
     @Override
     public Optional<CarDto> getCarById(Long id) {
-       return carRepository.findById(id)
-               .map(value -> new CarDto(value.getBrand(), value.getModel(), value.getEngineType()));
-               //.orElseThrow(() -> new RuntimeExcept("Car not found"));
+       return Optional.ofNullable(carRepository.findById(id)
+               .map(value -> new CarDto(value.getBrand(), value.getModel(), value.getEngineType()))
+               .orElseThrow(() -> new CarNotFoundException("Car was not found.")));
+
     }
 }

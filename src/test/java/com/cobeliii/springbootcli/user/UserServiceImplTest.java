@@ -27,7 +27,7 @@ class UserServiceImplTest {
     void itShouldGetAllUsers() {
         //given
         long id = 1L;
-        Users user = new Users("John");
+        User user = new User("John");
         user.setId(id);
 
         //when
@@ -42,7 +42,7 @@ class UserServiceImplTest {
     void itShouldGetUserById() {
         //given
         long id = 1L;
-        Users user = new Users("John");
+        User user = new User("John");
         user.setId(id);
 
         //when
@@ -57,7 +57,7 @@ class UserServiceImplTest {
     void itShouldGetUserByName() {
         //given
         long id = 1L;
-        Users user = new Users("John");
+        User user = new User("John");
         user.setId(id);
         //when
         when(userRepository.findByName(user.getName())).thenReturn(Optional.of(user));

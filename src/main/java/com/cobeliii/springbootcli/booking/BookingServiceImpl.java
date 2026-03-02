@@ -19,6 +19,7 @@ import java.util.Objects;
 
 
 @Service
+@Transactional
 public class BookingServiceImpl implements BookingService{
     private final BookingRepository bookingRepository;
 
@@ -34,7 +35,6 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
-    @Transactional
     public Booking bookCar(Long carId, Long userId) {
         Car car = carRepository.findById(carId)
                 .orElseThrow(() -> new CarNotFoundException("Car not found"));
@@ -107,6 +107,22 @@ public class BookingServiceImpl implements BookingService{
     public List<BookingDto> getAllBookings() {
         return bookingRepository.findAll()
                 .stream()
+                .map(b -> new BookingDto(
+                        b.getId(),
+                        b.getUser() != null ? b.getUser().getId() : null,
+                        b.getCar() != null ? b.getCar().getId() : null,
+                        b.getStartTime(),
+                        b.getEndTime(),
+                        b.isActive()
+                ))
+                .toList();
+    }
+
+    @Override
+    public List<BookingDto> getBookingByUserId(Long userId) {
+        return bookingRepository.findAll()
+                .stream()
+                .filter(booking -> Objects.equals(booking.getUser().getId(), userId))
                 .map(b -> new BookingDto(
                         b.getId(),
                         b.getUser() != null ? b.getUser().getId() : null,

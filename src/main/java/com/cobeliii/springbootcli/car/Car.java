@@ -1,7 +1,6 @@
 package com.cobeliii.springbootcli.car;
 
 import com.cobeliii.springbootcli.booking.Booking;
-import com.cobeliii.springbootcli.user.User;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

@@ -2,6 +2,8 @@ package com.cobeliii.springbootcli.user;
 
 import com.cobeliii.springbootcli.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,9 +21,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public List<UserDto> getAllUsers() {
-        List<User> allUsers = userRepository.findAll();
-
-        return allUsers.stream()
+        Pageable pageable = PageRequest.of(0, 10);
+        return userRepository.findAll(pageable).stream()
                 .map(user -> new UserDto(user.getName()))
                 .toList();
     }

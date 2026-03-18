@@ -11,6 +11,8 @@ import com.cobeliii.springbootcli.user.UserRepository;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -103,9 +105,11 @@ public class BookingServiceImpl implements BookingService{
     }
 
 
+
     @Override
     public List<BookingDto> getAllBookings() {
-        return bookingRepository.findAll()
+        Pageable pageable = PageRequest.of(0, 10);
+        return bookingRepository.findAll(pageable)
                 .stream()
                 .map(b -> new BookingDto(
                         b.getId(),

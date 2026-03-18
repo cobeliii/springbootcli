@@ -2,6 +2,8 @@ package com.cobeliii.springbootcli.car;
 
 import com.cobeliii.springbootcli.exceptions.CarNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +20,8 @@ public class CarServiceImpl implements CarService{
 
     @Override
     public List<CarDto> getAllAvailableCars() {
-        return carRepository.findAll()
+        Pageable pageable = PageRequest.of(0, 10);
+        return carRepository.findAll(pageable)
                 .stream()
                 .map(car -> new CarDto(car.getBrand(), car.getModel(), car.getEngineType()))
                 .toList();
@@ -26,7 +29,8 @@ public class CarServiceImpl implements CarService{
 
     @Override
     public List<CarDto> getAvailableElectricCars() {
-        return carRepository.findAll()
+        Pageable pageable = PageRequest.of(0, 10);
+        return carRepository.findAll(pageable)
                 .stream()
                 .filter(car -> car.getEngineType().equalsIgnoreCase("electric"))
                 .map(car -> new CarDto(car.getBrand(), car.getModel(), car.getEngineType()))

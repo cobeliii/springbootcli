@@ -1,6 +1,5 @@
 package com.cobeliii.springbootcli.booking;
 
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 

@@ -122,19 +122,4 @@ public class BookingServiceImpl implements BookingService{
                 .toList();
     }
 
-    @Override
-    public List<BookingDto> getBookingByUserId(Long userId) {
-        return bookingRepository.findAll()
-                .stream()
-                .filter(booking -> Objects.equals(booking.getUser().getId(), userId))
-                .map(b -> new BookingDto(
-                        b.getId(),
-                        b.getUser() != null ? b.getUser().getId() : null,
-                        b.getCar() != null ? b.getCar().getId() : null,
-                        b.getStartTime(),
-                        b.getEndTime(),
-                        b.isActive()
-                ))
-                .toList();
-    }
 }

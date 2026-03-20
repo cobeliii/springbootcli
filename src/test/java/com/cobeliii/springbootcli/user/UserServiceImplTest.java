@@ -53,16 +53,5 @@ class UserServiceImplTest {
         assertThat(actual).isEqualTo(Optional.of(new UserDto("John")));
     }
 
-    @Test
-    void itShouldGetUserByName() {
-        //given
-        long id = 1L;
-        User user = new User("John");
-        user.setId(id);
-        //when
-        when(userRepository.findByName(user.getName())).thenReturn(Optional.of(user));
-        Optional<UserDto> actual = underTest.getUserByName(user.getName());
-        //Assert
-        assertThat(actual).isEqualTo(Optional.of(new UserDto("John")));
-    }
+
 }

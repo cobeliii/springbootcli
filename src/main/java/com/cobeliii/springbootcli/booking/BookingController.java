@@ -27,7 +27,7 @@ public class BookingController {
     }
 
     @DeleteMapping("/{bookingId}")
-    public void cancelBookingById(@PathVariable("bookingId") Long bookingId){
+    public void cancelBookingById(@PathVariable Long bookingId){
         bookingService.cancelBookingById(bookingId);
     }
 

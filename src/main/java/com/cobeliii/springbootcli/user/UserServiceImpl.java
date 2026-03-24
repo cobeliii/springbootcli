@@ -34,11 +34,5 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(() -> new UserNotFoundException("User not Found")));
     }
 
-    @Override
-    public Optional<UserDto> getUserByName(String name) {
-        return Optional.ofNullable(userRepository.findByName(name)
-                .map(user -> new UserDto(user.getName()))
-                .orElseThrow(() -> new UserNotFoundException("User not Found")));
-    }
 
 }

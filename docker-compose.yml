@@ -1,0 +1,40 @@
+services:
+  spring-cli:
+    container_name: spring-cli
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/springbootcli
+      SPRING_DATASOURCE_USERNAME: cobeliii
+      SPRING_DATASOURCE_PASSWORD: password
+    ports:
+        - "8080:8080"
+
+    networks:
+      - cobeliii
+
+  db:
+    container_name: spring-cli-postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: cobeliii
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: springbootcli
+
+    ports:
+      - "5332:5432"
+    restart: unless-stopped
+    volumes:
+      - db:/var/lib/postgresql/data
+
+    networks:
+      - cobeliii
+
+networks:
+  cobeliii:
+    driver: bridge
+
+volumes:
+  db:

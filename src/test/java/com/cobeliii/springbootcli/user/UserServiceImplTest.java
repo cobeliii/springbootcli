@@ -1,57 +1,65 @@
 package com.cobeliii.springbootcli.user;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Import;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
-
-@ExtendWith(MockitoExtension.class)
-
+@DataJpaTest
+@Import(UserServiceImpl.class)
+@Testcontainers
 class UserServiceImplTest {
 
-    @Mock
-    private UserRepository userRepository;
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> postgres =
+            new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"));
 
-    @InjectMocks
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private UserServiceImpl underTest;
+
+    @BeforeEach
+    void setUp() {
+        userRepository.deleteAll();
+    }
+
+    @AfterEach
+    void tearDown() {
+
+    }
 
     @Test
     void itShouldGetAllUsers() {
         //given
-        long id = 1L;
         User user = new User("John");
-        user.setId(id);
-
         //when
-        when(userRepository.findAll()).thenReturn(List.of(user));
-        List<UserDto> actual = underTest.getAllUsers();
+        userRepository.save(user);
 
-        //Assert
-        assertThat(actual).isEqualTo(List.of(new UserDto("John")));
+        List<UserDto> allUsers = underTest.getAllUsers();
+        assertThat(allUsers).containsOnly(new UserDto("John"));
     }
 
     @Test
     void itShouldGetUserById() {
         //given
-        long id = 1L;
         User user = new User("John");
-        user.setId(id);
-
         //when
-        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        userRepository.save(user);
         Optional<UserDto> actual = underTest.getUserById(user.getId());
-
         //Assert
-        assertThat(actual).isEqualTo(Optional.of(new UserDto("John")));
+        assertThat(actual).isPresent().get().isEqualTo(new UserDto("John"));
     }
-
-
 }

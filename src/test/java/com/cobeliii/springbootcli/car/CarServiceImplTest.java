@@ -5,6 +5,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,15 +28,24 @@ public class CarServiceImplTest {
     @Test
     void itShouldGetAllCars() {
         Car car = new Car("BMW", "M5", "petrol");
-        when(carRepository.findAll()).thenReturn(List.of(car));
+        Pageable pageable = PageRequest.of(0, 10);
+
+        when(carRepository.findAll(pageable))
+                .thenReturn(new PageImpl<>(List.of(car), pageable, 1));
+
         List<CarDto> actual = underTest.getAllAvailableCars();
+
         assertThat(actual).isEqualTo(List.of(new CarDto("BMW", "M5", "petrol")));
     }
 
     @Test
     void itShouldGetAllElectricCars() {
         Car car = new Car("BMW", "M5", "electric");
-        when(carRepository.findAll()).thenReturn(List.of(car));
+        Pageable pageable = PageRequest.of(0, 10);
+
+        when(carRepository.findAll(pageable))
+                .thenReturn(new PageImpl<>(List.of(car), pageable, 1));
+
         List<CarDto> actual = underTest.getAllAvailableCars();
         assertThat(actual).isEqualTo(List.of(new CarDto("BMW", "M5", "electric")));
     }

@@ -6,7 +6,6 @@ services:
       dockerfile: Dockerfile
 
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/springbootcli
       SPRING_DATASOURCE_USERNAME: cobeliii
       SPRING_DATASOURCE_PASSWORD: password
     ports:

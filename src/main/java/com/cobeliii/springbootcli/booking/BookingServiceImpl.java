@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 
 @Service
@@ -44,32 +43,13 @@ public class BookingServiceImpl implements BookingService{
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-
-        int activeBookingsForUser = 0;
-
-        List<Booking> bookings = bookingRepository.findAll();
-        for (Booking booking : bookings) {
-            if (!booking.isActive()) {
-                continue;
-            }
-
-            boolean sameUser = booking.getUser() != null && Objects.equals(booking.getUser().getId(), userId);
-            if (!sameUser) {
-                continue;
-            }
-
-            activeBookingsForUser++;
-
-            boolean sameCar = booking.getCar() != null && Objects.equals(booking.getCar().getId(), carId);
-            if (sameCar) {
-                throw new BookingFailedException("User already booked this car");
-            }
+        if (bookingRepository.existsByUserIdAndCarIdAndIsActiveTrue(userId, carId)) {
+            throw new BookingFailedException("User already booked this car");
         }
 
-        if (activeBookingsForUser >= 2) {
+        if (bookingRepository.countByUserIdAndIsActiveTrue(userId) >= 2) {
             throw new BookingFailedException("User can only book 2 cars");
         }
-
 
         if (!car.isAvailable()) {
             throw new BookingFailedException("Car is not available");
@@ -82,10 +62,8 @@ public class BookingServiceImpl implements BookingService{
         booking.setUser(user);
         booking.setCar(car);
         booking.setStartTime(LocalDateTime.now());
-        booking.setEndTime(null);
         booking.setActive(true);
         return bookingRepository.save(booking);
-
     }
 
     @Override

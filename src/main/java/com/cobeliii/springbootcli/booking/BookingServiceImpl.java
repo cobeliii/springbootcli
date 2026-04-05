@@ -7,9 +7,7 @@ import com.cobeliii.springbootcli.exceptions.CarNotFoundException;
 import com.cobeliii.springbootcli.exceptions.UserNotFoundException;
 import com.cobeliii.springbootcli.user.User;
 import com.cobeliii.springbootcli.user.UserRepository;
-
 import jakarta.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,11 +19,9 @@ import java.util.List;
 
 @Service
 @Transactional
-public class BookingServiceImpl implements BookingService{
+public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
-
     private final CarRepository carRepository;
-
     private final UserRepository userRepository;
 
     @Autowired
@@ -36,7 +32,7 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
-    public Booking bookCar(Long carId, Long userId) {
+    public BookingDto bookCar(Long carId, Long userId) {
         Car car = carRepository.findById(carId)
                 .orElseThrow(() -> new CarNotFoundException("Car not found"));
 
@@ -63,17 +59,28 @@ public class BookingServiceImpl implements BookingService{
         booking.setCar(car);
         booking.setStartTime(LocalDateTime.now());
         booking.setActive(true);
-        return bookingRepository.save(booking);
+
+        Booking saved = bookingRepository.save(booking);
+
+        return new BookingDto(
+                saved.getId(),
+                saved.getUser().getId(),
+                saved.getCar().getId(),
+                saved.getStartTime(),
+                saved.getEndTime(),
+                saved.isActive()
+        );
     }
 
     @Override
     public void cancelBookingById(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
+
         booking.setEndTime(LocalDateTime.now());
 
         Car car = booking.getCar();
-        if (car != null){
+        if (car != null) {
             car.setAvailable(true);
             carRepository.save(car);
         }
@@ -81,8 +88,6 @@ public class BookingServiceImpl implements BookingService{
         booking.setActive(false);
         bookingRepository.deleteById(bookingId);
     }
-
-
 
     @Override
     public List<BookingDto> getAllBookings() {
@@ -99,5 +104,4 @@ public class BookingServiceImpl implements BookingService{
                 ))
                 .toList();
     }
-
 }

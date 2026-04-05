@@ -16,19 +16,18 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<BookingDto> getAllBookings(){
+    public List<BookingDto> getAllBookings() {
         return bookingService.getAllBookings();
     }
 
     @PostMapping
-    public ResponseEntity<Booking> bookCar(@RequestBody BookingRequest newRequest){
-        Booking booking = bookingService.bookCar(newRequest.carId(), newRequest.userId());
+    public ResponseEntity<BookingDto> bookCar(@RequestBody BookingRequest newRequest) {
+        BookingDto booking = bookingService.bookCar(newRequest.carId(), newRequest.userId());
         return ResponseEntity.status(HttpStatus.CREATED).body(booking);
     }
 
     @DeleteMapping("/{bookingId}")
-    public void cancelBookingById(@PathVariable Long bookingId){
+    public void cancelBookingById(@PathVariable Long bookingId) {
         bookingService.cancelBookingById(bookingId);
     }
-
 }

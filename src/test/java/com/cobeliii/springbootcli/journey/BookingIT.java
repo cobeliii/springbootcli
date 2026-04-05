@@ -113,18 +113,35 @@ public class BookingIT {
                 .returnResult()
                 .getResponseBody();
 
-        System.out.println(responseBody);
-        // then
+
         assertThat(responseBody).isNotNull();
-        assertThat(responseBody.getUser().getId()).isEqualTo(user.getId());
-        assertThat(responseBody.getCar().getId()).isEqualTo(car.getId());
+        assertThat(responseBody.getId()).isNotNull();
+
+        Booking savedBooking = bookingRepository.findAll().get(0);
+        assertThat(savedBooking.getUser()).isNotNull();
+        assertThat(savedBooking.getUser().getId()).isEqualTo(user.getId());
+        assertThat(savedBooking.getCar()).isNotNull();
+        assertThat(savedBooking.getCar().getId()).isEqualTo(car.getId());
         assertThat(bookingRepository.findAll()).hasSize(1);
     }
 
     @Test
     void itShouldCancelBookingById() {
         //given
-        //when
-        //Assert
+        Car car = new Car("BMW", "M5", "petrol");
+        User user = new User("John");
+        carRepository.save(car);
+        userRepository.save(user);
+        Booking booking = new Booking(user, car);
+        bookingRepository.save(booking);
+
+        webTestClient.delete()
+                .uri("/api/v1/bookings/" + booking.getId())
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk();
+
+        assertThat(bookingRepository.findAll()).isEmpty();
+
     }
 }
